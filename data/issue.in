@@ -1,0 +1,31 @@
+###############################################################################
+
+Welcome to Chimera Rescue Disk. To log in, use either of:
+
+	- root:@PASSWORD@
+	- @USER@:@PASSWORD@
+
+The `@USER@` user is in the group `wheel`, which has `doas(1)` permissions.
+
+----------------------------------[ Notices ]----------------------------------
+This project is not possible without the hard effort of Chimera Linux
+developers (especially q66).
+
+Thanks to all of them :-)
+ 
+You can also install Chimera Linux with this disk.
+To install Chimera Linux, please follow the official documentation.
+
+WARNING!!! As DIFFERENCE from official live media, only NETWORK installation is
+possible due to incompatible modifications on medium files.
+Performing local installation will cause UNFORESEEN CONSEQUENCES.
+-------------------------------------------------------------------------------
+
+Thank you for trying Chimera Rescue Disk (and Chimera Linux)!
+
+Project home:
+	https://codeberg.org/BarryLhm/chimera-rescuedisk
+Chimera Linux official site:
+	https://chimera-linux.org
+
+###############################################################################

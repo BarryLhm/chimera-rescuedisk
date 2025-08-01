@@ -1,0 +1,3 @@
+[submodule "chimera-live"]
+	path = chimera-live
+	url = https://github.com/chimera-linux/chimera-live

@@ -1,0 +1,28 @@
+#!/bin/sh ## not executable, just for syntax highlighting
+
+CUST_DIR="/cust"
+ROOT_DIR="$CUST_DIR/root"
+SCRIPTS_DIR="$CUST_DIR/scripts"
+SERVICE_DIR="/usr/local/lib/dinit.d"
+
+find0at() ## (basedir, [pattern ...])
+{
+	local basedir="$1"; shift
+	cd "$basedir"
+	find . -print0 "$@"
+}
+
+xargs0at() ## (basedir, replstr, [command [args ...]])
+{
+	local basedir="$1" replstr="$2"; shift 2
+	cd "$basedir"
+	xargs -0I "$replstr" -- "$@"
+}
+
+copyfile() ## (src, dst, uid, gid, mode)
+{
+	local src="$1" dst="$2" uid="$3" gid="$4" mode="$5"; shift 5
+	cp "$src" "$dst"
+	chown "$3:$4" "$dst"
+	chmod "$mode" "$dst"
+}

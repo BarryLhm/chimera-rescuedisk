@@ -1,0 +1,13 @@
+acl-progs
+audit
+bash
+curl
+gawk
+gcompat
+gsed
+htop
+iftop
+lshw
+lsof
+wget
+zip

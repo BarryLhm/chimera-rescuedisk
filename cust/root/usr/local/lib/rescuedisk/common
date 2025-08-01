@@ -1,0 +1,67 @@
+#!/bin/sh ## not executable, just for syntax highlighting
+
+PROG_DIR="/usr/local/lib/rescuedisk"
+GRAPHICAL_SESSION="/usr/bin/startxfce4"
+
+PROGFILE="$(realpath "$0")"
+CMDLINE="$(cat /proc/cmdline)"
+
+CMDLINEKEYS=
+LIVE_USER="anon"
+LIVE_PASS="chimera"
+LIVE_SHELL="/bin/sh"
+CHANGE_SHELL=0
+
+ask()
+{
+	local default="$1" prompt="$2" answer; shift 2
+	while true
+	do	read -rp "$prompt" answer || (echo >&2; continue)
+		[ "$#" != 0 ] || break
+		[ "$answer" ] || answer="$default"
+		for i in "$@"
+		do [ "$answer" != "$i" ] || break 2
+		done
+	done
+	echo "$answer"
+}
+
+setcolor()
+{
+	local color="$1" code; shift
+	case "$color" in
+	yellow) code="\033[93m";;
+	reset) code="\033[39m";;
+	esac
+	printf "$code"
+}
+
+add_user_alias()
+{
+	local user="$1" alias="$2" entry; shift 2
+	## dup passwd
+	entry="$(getent passwd "$user")"
+	echo "$alias:${entry#*:}" >> /etc/passwd
+	## dup group
+	usermod -aG $(groups "$user") "$alias"
+	entry="$(getent group "$user")"
+	echo "$alias:${entry#*:}" >> /etc/group
+	## dup shadow
+	entry="$(getent shadow "$user")"
+	echo "$alias:${entry#*:}" >> /etc/shadow
+}
+
+_process_cmdline()
+{
+	for i in $CMDLINE
+	do	local key="${i%%=*}" value="${i#*=}"
+		CMDLINEKEYS="$CMDLINEKEYS $key"
+		case "$key" in
+		live-user) LIVE_USER="$value";; ## orig initramfs
+		live-password) LIVE_PASS="$value";; ## orig initramfs
+		live-shell) CHANGE_SHELL=1 LIVE_SHELL="$value";;
+		esac
+	done
+}
+
+_process_cmdline
