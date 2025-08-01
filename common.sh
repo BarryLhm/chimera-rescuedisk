@@ -15,3 +15,5 @@ error()
 }
 
 [ "$(realpath "$0")" = "$(realpath -q "$prog")" ] || error "Please run under repo root dir"
+
+[ "$(realpath "$0")" = "$(realpath -q "$(basename "$0")" || :)" ] || error "Please run under repo root dir"
