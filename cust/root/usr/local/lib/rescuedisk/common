@@ -2,9 +2,12 @@
 
 PROG_DIR="/usr/local/lib/rescuedisk"
 GRAPHICAL_SESSION="/usr/bin/startxfce4"
+LOCALE_DIR="/usr/share/locale"
+LOCALE_CONF="/etc/locale.conf"
 
 PROGFILE="$(realpath "$0")"
 CMDLINE="$(cat /proc/cmdline)"
+export COLUMNS="$(tput cols)"
 
 CMDLINEKEYS=
 LIVE_USER="anon"
@@ -15,8 +18,8 @@ CHANGE_SHELL=0
 ask()
 {
 	local default="$1" prompt="$2" answer; shift 2
-	while true
-	do	read -rp "$prompt" answer || (echo >&2; continue)
+	while :
+	do	read -rp "$prompt" answer || { echo "^D" >&2; continue; }
 		[ "$#" != 0 ] || break
 		[ "$answer" ] || answer="$default"
 		for i in "$@"

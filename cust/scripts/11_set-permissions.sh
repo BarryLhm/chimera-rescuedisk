@@ -1,4 +1,3 @@
-
 #!/bin/sh -eu
 
 . "$(dirname "$(realpath "$0")")/common"
