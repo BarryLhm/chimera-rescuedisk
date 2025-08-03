@@ -27,7 +27,7 @@ ask_lang()
 	echo "(l) Language list"
 	echo "(<locale name>) Set language to <locale name>"
 	while :
-	do	answer="$(ask "zh_CN.UTF-8" "[zh_CN.UTF-8 ] " / l $(ls "$LOCALE_DIR") )"
+	do	answer="$(ask "zh_CN.UTF-8" "[zh_CN.UTF-8] " / l $(ls "$LOCALE_DIR") )"
 		case "$answer" in
 		/) break;;
 		l) ls -C "$LOCALE_DIR" | less -P s"Press arrow keys to scroll, 'q' to return";;
@@ -59,7 +59,7 @@ ask_oper()
 setcolor yellow
 setcolor reset
 echo
-echo "Welcome to Chimera Rescue Disk startup menu!"
+echo "Welcome to Chimera Maintenance Disk startup menu!"
 echo
 ask_lang
 echo

@@ -7,7 +7,7 @@ realprog="$(basename "$script")"
 
 duplist=pkgs.d/dup.txt
 uncatlist=pkgs.d/Z114514_uncategorized.list
-out_image=chimera-rescuedisk.iso
+out_image=cmd.iso
 
 error()
 {

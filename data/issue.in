@@ -1,6 +1,6 @@
 ###############################################################################
 
-Welcome to Chimera Rescue Disk. To log in, use either of:
+Welcome to Chimera Maintenance Disk. To log in, use either of:
 
 	- root:@PASSWORD@
 	- @USER@:@PASSWORD@
@@ -21,10 +21,10 @@ possible due to incompatible modifications on medium files.
 Performing local installation will cause UNFORESEEN CONSEQUENCES.
 -------------------------------------------------------------------------------
 
-Thank you for trying Chimera Rescue Disk (and Chimera Linux)!
+Thank you for trying Chimera Maintenance Disk (and Chimera Linux)!
 
 Project home:
-	https://codeberg.org/BarryLhm/chimera-rescuedisk
+	https://codeberg.org/BarryLhm/cmd
 Chimera Linux official site:
 	https://chimera-linux.org
 

@@ -1,1 +1,1 @@
-GETTY_ARGS="-Jnpl /usr/local/lib/rescuedisk/startup-menu.sh"
+GETTY_ARGS="-Jnl /usr/local/cmd/startup-menu.sh"

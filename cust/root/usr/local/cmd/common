@@ -1,6 +1,6 @@
 #!/bin/sh ## not executable, just for syntax highlighting
 
-PROG_DIR="/usr/local/lib/rescuedisk"
+PROG_DIR="/usr/local/cmd"
 GRAPHICAL_SESSION="/usr/bin/startxfce4"
 LOCALE_DIR="/usr/share/locale"
 LOCALE_CONF="/etc/locale.conf"

@@ -4,5 +4,5 @@
 
 cd /
 ###### permissions following...
-chmod +x /usr/local/lib/rescuedisk/*.sh
+chmod +x /usr/local/cmd/*.sh
 chmod +x /etc/rc.local

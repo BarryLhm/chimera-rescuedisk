@@ -1,5 +1,5 @@
-# chimera-rescuedisk
-A rescue disk & build system based on Chimera Linux
+# Chimera Maintenance Disk
+A maintenance disk & its build system based on Chimera Linux & chimera-live
 
 ### Files
 `chimera-live/`: original implements & references & dependency

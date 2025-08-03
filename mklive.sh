@@ -2,7 +2,7 @@
 #
 # mklive.sh
 # Chimera Linux live image creation tool
-# (Modified to fit in rescuedisk requirements)
+# (Modified to fit in maintenance disk requirements)
 #
 # Copyright 2022 q66 <q66@chimera-linux.org>
 #           2025 BarryLhm <BarryLhm@outlook.com>
@@ -512,7 +512,7 @@ msg "Generating ISO image..."
 generate_menu()
 {
 	sed \
-	 -e "s|@@BOOT_TITLE@@|Chimera Rescue Disk|g" \
+	 -e "s|@@BOOT_TITLE@@|Chimera Maintenance Disk|g" \
 	 -e "s|@@KERNFILE@@|$KERNFILE|g" \
 	 -e "s|@@KERNVER@@|$KERNVER|g" \
 	 -e "s|@@ARCH@@|$APK_ARCH|g" \

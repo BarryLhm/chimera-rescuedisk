@@ -1,3 +1,3 @@
 #!/bin/sh -eu
 
-/usr/local/lib/rescuedisk/setup.sh
+/usr/local/cmd/setup.sh
