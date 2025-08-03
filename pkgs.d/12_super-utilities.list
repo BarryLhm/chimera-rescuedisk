@@ -1,3 +1,5 @@
+##0 super utilities
+##1 useful but not necessary
 bat
 bottom
 btop
@@ -5,7 +7,6 @@ dust
 eza
 fastfetch
 fd
-fish-shell
 fzf
 ripgrep
 uv

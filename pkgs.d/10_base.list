@@ -1,3 +1,4 @@
+## basic progs/utilities
 acl-progs
 audit
 bash
@@ -11,3 +12,6 @@ lshw
 lsof
 wget
 zip
+fish-shell
+python
+python-pip

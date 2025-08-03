@@ -13,6 +13,11 @@
 
 trap "" INT
 
+setlang()
+{
+	export LANG="$1"; echo "LANG=$1" > "$LOCALE_CONF"; echo "Language set to $1"
+}
+
 ask_lang()
 {
 	setcolor yellow
@@ -26,7 +31,7 @@ ask_lang()
 		case "$answer" in
 		/) break;;
 		l) ls -C "$LOCALE_DIR" | less -P s"Press arrow keys to scroll, 'q' to return";;
- 		*) echo "LANG=$answer" > "$LOCALE_CONF"; echo "Language set to $answer"; break;;
+ 		*) setlang "$answer"; break;;
 		esac
 	done
 }

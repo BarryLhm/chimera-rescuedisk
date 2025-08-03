@@ -25,6 +25,11 @@ For other options, please refer to `mklive.sh` and `build.sh`
 - To test:
 `./test.sh` (options will be passed to qemu as extra options)
 
+### Customization:
+- Recommended: `pkgs.d/xx_apps.list` `pkgs.d/xx_tools.list` `pkgs.d/xx_super-utilities.list`
+- Advanced: `customize.sh` `cust/scripts/*.sh` `cust/root/...`
+- Core: `build.sh` `mklive.sh`
+
 ### Technical Information:
 - Building procedure:
 (Path with a leading - means it's relative to target root)
