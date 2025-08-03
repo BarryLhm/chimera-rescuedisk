@@ -27,7 +27,7 @@ For other options, please refer to `mklive.sh` and `build.sh`
 
 ### Customization:
 - Recommended: `pkgs.d/xx_apps.list` `pkgs.d/xx_tools.list` `pkgs.d/xx_super-utilities.list`
-- Advanced: `customize.sh` `cust/scripts/*.sh` `cust/root/...`
+- Advanced: `cmdline` `customize.sh` `cust/scripts/*.sh` `cust/root/...`
 - Core: `build.sh` `mklive.sh`
 
 ### Technical Information:
