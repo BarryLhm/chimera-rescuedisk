@@ -1,0 +1,5 @@
+#!/bin/sh ## not executable, just for syntax highlighting
+
+export GTK_IM_MODULES=ibus
+export QT_IM_MODULES=ibus
+export XMODIFIRES=@im=ibus

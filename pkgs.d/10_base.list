@@ -3,6 +3,7 @@ acl-progs
 audit
 bash
 curl
+fish-shell
 gawk
 gcompat
 gsed
@@ -10,8 +11,7 @@ htop
 iftop
 lshw
 lsof
-wget
-zip
-fish-shell
 python
 python-pip
+wget
+zip
