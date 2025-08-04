@@ -6,7 +6,7 @@ cat pkgs.d/*.list | sort | uniq -d >> "$duplist"
 [ "$(cat "$duplist")" ] && echo "[Info] lists contains duplicated lines:" && cat "$duplist" || :
 
 for i in pkgs.d/*.list
-do	sort -u "$i" | grep -vxFf "$duplist" "$i" | awk NF > "$i.tmp"
+do	sort -u "$i" | grep -vxFf "$duplist" | awk NF > "$i.tmp"
 	mv "$i.tmp" "$i"
 done
 
