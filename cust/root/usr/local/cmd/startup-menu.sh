@@ -15,7 +15,7 @@ trap "" INT
 
 setlang()
 {
-	export LANG="$1"; echo "LANG=$1" > "$LOCALE_CONF"; echo "Language set to $1"
+	echo "LANG=$1" > "$LOCALE_CONF"; echo "Language set to $1"
 }
 
 ask_lang()
@@ -47,9 +47,9 @@ ask_oper()
 	echo "(r) reboot"
 	set +e
 	case "$(ask 0 "[0] " 0 1 2 r)" in
-	0) login -f root;;
-	1) login -f "$LIVE_USER";;
-	2) login -f "$LIVE_USER-graphical";;
+	0) login -f root LANG=C;;
+	1) login -f "$LIVE_USER" LANG=C;;
+	2) login -f "$LIVE_USER-graphical" LANG=C;;
 	r) reboot;;
 	esac
 	set -e
