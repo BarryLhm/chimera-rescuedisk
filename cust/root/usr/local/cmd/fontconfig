@@ -7,7 +7,7 @@
 			<string>monospace</string>
 		</test>
 		<edit binding="strong" mode="prepend" name="family">
-			<string>Monaspace Neon</string>
+			<string>DejaVu Sans Mono</string>
 			<string>Noto Sans CJK SC</string>
 			<string>Noto Sans</string>
 			<string>Noto Color Emoji</string>
