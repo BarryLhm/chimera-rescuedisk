@@ -160,7 +160,7 @@ Options: (those with * is mandatory and ! is advanced option)
   -s FSTYPE   ! Filesystem to use (squashfs or erofs, default: erofs).
   -S FILE     ! Script (copied to /customize.sh) to be executed during build (after packages, before packing).
   -t SIZE     ! Use tmpfs for target root directory. (refer to tmpfs manual page for SIZE param)
-  -T SIZE     ! Use tmpfs for the whole build directory. (refer to tmpfs manual page for SIZE param)
+  -T SIZE     ! Use tmpfs for host, root and image directory with each size limited to SIZE (except host dir). (refer to tmpfs manual page for SIZE param)
 EOF
 	exit "${1-1}"
 }
@@ -292,21 +292,22 @@ ROOT_DIR="$BUILD_DIR/rootfs"
 HOST_DIR="$BUILD_DIR/host"
 LIVE_DIR="$IMAGE_DIR/live"
 
+mkdir "${ROOT_DIR:?}" "$IMAGE_DIR" "${LIVE_DIR:?}" "${HOST_DIR:?}" || die "failed to create directories"
+
 # tmpfs build dir
 case "$USE_TMPFS" in
 half)	msg "[Warning] Using tmpfs for target root directory"
-	mkdir "${ROOT_DIR:?}"
 	mount -t tmpfs -o noatime,size="$TMPFS_SIZE" mklive-tmproot "${ROOT_DIR:?}";;
-full)	msg "[Warning] Using tmpfs for build directory"
-	mount -t tmpfs -o noatime,size="$TMPFS_SIZE" mklive-tmpbuild "$BUILD_DIR";;
+full)	msg "[Warning] Using tmpfs for host, root and image directory"
+	mount -t tmpfs -o noatime mklive-tmphost "${HOST_DIR:?}"
+	mount -t tmpfs -o noatime,size="$TMPFS_SIZE" mklive-tmproot "${ROOT_DIR:?}"
+	mount -t tmpfs -o noatime,size="$TMPFS_SIZE" mklive-tmpimage "$IMAGE_DIR"
+	mkdir "${LIVE_DIR:?}";;
 none);;
 esac
 
 
 WRKSRC="$(pwd)"
-
-[ "$USE_TMPFS" = half ] || mkdir "${ROOT_DIR:?}"
-mkdir "$IMAGE_DIR" "${LIVE_DIR:?}" "${HOST_DIR:?}" || die "failed to create directories"
 
 ## custom script & bind dir
 [ -z "$CUSTOM_SCRIPT" ] || CUSTOM_SCRIPT="$(realpath "$CUSTOM_SCRIPT")"
@@ -445,9 +446,8 @@ chroot "${ROOT_DIR:?}" mkinitramfs -o /tmp/initrd "${KERNVER}" || die "unable to
 
 mv "${ROOT_DIR:?}/tmp/initrd" "${LIVE_DIR:?}"
 
-for i in "${ROOT_DIR:?}/boot/"vmlinu[xz]-"${KERNVER}"; do
-	name="${i##*boot/}"
-	cp -f "$i" "${LIVE_DIR:?}/${name%%-*}"
+for i in "${ROOT_DIR:?}/boot/vmlinuz-${KERNVER}"; do
+	cp "$i" "${LIVE_DIR:?}/vmlinuz"
 done
 
 # clean up target root
@@ -495,6 +495,11 @@ msg "Generating root filesystem..."
 
 mount --bind "${BUILD_DIR}" "${HOST_DIR:?}/mnt" || die "build dir bind mount failed"
 [ "$USE_TMPFS" != "half" ] || mount --bind "${BUILD_DIR}/rootfs" "${HOST_DIR:?}/mnt/rootfs" || die "root dir bind mount failed"
+[ "$USE_TMPFS" != "full" ] || \
+{
+	mount --bind "${BUILD_DIR}/rootfs" "${HOST_DIR:?}/mnt/rootfs" || die "root dir bind mount failed"
+	mount --bind "${BUILD_DIR}/image" "${HOST_DIR:?}/mnt/image" || die "image dir bind mount failed"
+}
 
 case "$FSTYPE" in
 	erofs)	# tried zstd, it's quite a bit bigger than xz... and experimental
@@ -526,7 +531,7 @@ generate_iso_grub()
 {
 	# because host grub would not have all the targets
 	chroot "${HOST_DIR:?}" /usr/bin/grub-mkrescue -o /mnt/image.iso \
-	 --product-name "Chimera Linux" \
+	 --product-name "Chimera Maintenance Disk" \
 	 --product-version "$(date "+%Y%m%d")" \
 	 --mbr-force-bootable \
 	 /mnt/image \
