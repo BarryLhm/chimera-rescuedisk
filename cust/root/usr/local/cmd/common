@@ -20,8 +20,8 @@ ask()
 	local default="$1" prompt="$2" answer; shift 2
 	while :
 	do	read -rp "$prompt" answer || { echo "^D" >&2; continue; }
-		[ "$#" != 0 ] || break
 		[ "$answer" ] || answer="$default"
+		[ "$#" != 0 ] || break
 		for i in "$@"
 		do [ "$answer" != "$i" ] || break 2
 		done

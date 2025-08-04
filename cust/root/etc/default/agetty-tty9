@@ -1,0 +1,1 @@
+GETTY_ARGS="-Jnl /usr/local/cmd/system-monitor.sh"

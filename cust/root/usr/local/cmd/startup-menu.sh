@@ -64,7 +64,7 @@ echo
 ask_lang
 echo
 setcolor yellow
-echo "///NOTE/// Login prompts available on tty5-8}"
+echo "///NOTE/// Login prompts available on tty[5-8]"
 setcolor reset
 echo "---------------------------------------------"
 

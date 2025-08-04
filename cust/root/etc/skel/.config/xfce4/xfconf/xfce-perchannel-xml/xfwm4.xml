@@ -7,6 +7,7 @@
     <property name="double_click_action" type="string" value="maximize"/>
     <property name="easy_click" type="string" value="Super"/>
     <property name="scroll_workspaces" type="bool" value="false"/>
+    <property name="show_popup_shadow" type="bool" value="true"/>
     <property name="snap_to_windows" type="bool" value="true"/>
     <property name="theme" type="string" value="adw-gtk3-small"/>
     <property name="title_font" type="string" value="Sans 11"/>
