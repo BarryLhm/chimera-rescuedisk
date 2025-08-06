@@ -25,7 +25,7 @@ stage=lib
 first_stage=0
 repo_args=
 core_packages="chimerautils"
-host_packages="xorriso mtools dosfstools"
+host_packages="xorriso mtools dosfstools limine erofs-utils"
 umask 022
 
 def_build_dirs()
@@ -292,49 +292,56 @@ run_apk_at rootfs add $_packages || \
 #################### packaging
 stage packaging
 
-##### kernel
-for i in "$rootfs_dir/boot"/vmlinuz-*
+##### copy kernel & detect initramfs-tools
+
+### kernel
+found_kernel=0
+for i in "$rootfs_dir/boot"/vmlinu[xz]-*
 do	[ -f "$i" ] || error "detect_kernel: '$i' is not a file"
 	kernel_file="$i"
 	kernel_ver="${kernel_file##*/}"
 	kernel_type="${kernel_ver%%-*}"
 	kernel_ver="${kernel_ver#*-}"
+	found_kernel=1
 	break
 done
-[ -f "$kernel_file" ] || error "kernel not found"
-
+[ "$found_kernel" = 1 ] || error "detect_kernel: kernel not found"
 cp -T "$kernel_file" "$live_dir/$kernel_type"
-
-##### initramfs
-
-### copy initramfs tools
+### initramfs-tools
 [ -x "$rootfs_dir/usr/bin/mkinitramfs" ] || \
- die "rootfs does not contain initramfs-tools"
-cp -R "$dir/initramfs-tools/lib/live" "$rootfs_dir/usr/lib/"
-mv "$rootfs_dir/usr/local/bin" "$rootfs_dir/usr/local/bin.bak"
-mkdir "$rootfs_dir/usr/local/bin"
-##################################################### testing for local!!!
-cp "$dir/initramfs-tools/bin"/* "$rootfs_dir/usr/local/bin/"
-for i in hooks scripts
-do	mkdir -p "$rootfs_dir/usr/local/share/initramfs-tools/$i"
-	cp -R "$dir/initramfs-tools/$i"/* \
-	 "$rootfs_dir/usr/local/share/initramfs-tools/$i/"
+ error "rootfs does not contain initramfs-tools"
 
+##### generate filesystem
+
+### cleanup useless initrd
+rm -f "$rootfs_dir/boot"/initrd*
+mount -B "$_build_dir" "$host_dir/mnt"
+### bind mount
+case "$_use_tmpfs" in
+rootfs) mount -B "$rootfs_dir" "$host_dir$rootfs_dir_in_host";;
+all)	mount -B "$rootfs_dir" "$host_dir$rootfs_dir_in_host"
+	mount -B "$image_dir" "$host_dir$image_dir_in_host";;
+esac
+### make erofs
+host_run mkfs.erofs -b 4096 -z lzma -E ztailpacking \
+ "$live_dir_in_host/filesystem.erofs" "$rootfs_dir_in_host"
+
+##### generate initrd
+
+### copy initramfs files
+cp -R "$dir/initramfs-tools/lib/live" "$rootfs_dir/usr/lib/"
+cp "$dir/initramfs-tools/bin"/* "$rootfs_dir/usr/bin/"
+for i in hooks scripts
+do	cp -R "$dir/initramfs-tools/$i"/* \
+	 "$rootfs_dir/usr/share/initramfs-tools/$i/"
 done
-cp -R "$dir/data" "$rootfs_dir/lib/live"
+cp -R "$dir/data" "$rootfs_dir/usr/lib/live/"
 ### generate initramfs
 mkdir "$rootfs_dir/live"
 mount -B "$live_dir" "$rootfs_dir/live"
 chroot "$rootfs_dir" mkinitramfs -o /live/initrd "$kernel_ver"
 umount -lf "$rootfs_dir/live"
 rmdir "$rootfs_dir/live"
-### cleanup initramfs tools
-rm -r "$rootfs_dir/usr/local/lib/live"
-rm -r "$rootfs_dir/usr/local/bin"
-mv "$rootfs_dir/usr/local/bin.bak" "$rootfs_dir/usr/local/bin"
-rm -r "$rootfs_dir/usr/local/share/initramfs-tools"
-### cleanup initrd
-rm -f "$rootfs_dir/boot"/initrd*
 
 ##### cleanup
 
@@ -352,18 +359,6 @@ for i in passwd group shadow gshadow subuid subgid
 do	rm -f "$rootfs_dir/etc/$i-"
 done
 
-##### generate erofs
-
-mount "$_build_dir" "$host_dir/mnt"
-case $_use_tmpfs in
-half) mount --bind "$rootfs_dir" "rootfs_dir_in_host";;
-all)	mount --bind "$rootfs_dir" "rootfs_dir_in_host"
-	mount --bind "$image_dir" "$image_dir_in_host";;
-esac
-
-host_run /usr/bin/mkfs.erofs -b 4096 -z lzma -E ztailpacking \
- "$live_dir_in_host/filesystem.erofs" "$rootfs_dir_in_host"
-
 ##### generate efi
 generate_menu()
 {
@@ -376,9 +371,9 @@ generate_menu()
 	 "$1"
 }
 
-mkdir -p "$image_dir/boot/grub" "$image_dir/EFI/BOOT"
-generate_menu "$dir/grub/menu.cfg.in" >"$image_dir/boot/grub/grub.cfg"
+mkdir -p "$image_dir/EFI/BOOT"
 generate_menu "$dir/limine/limine.conf.in" >"$image_dir/limine.conf"
+
 for i in IA32 X64
 do cp "$host_dir/usr/share/limine/BOOT$i.EFI" "$image_dir/EFI/BOOT/"
 done
@@ -388,7 +383,8 @@ truncate -s 2949120 "$image_dir/efi.img"
 host_run mkfs.vfat -F 12 -S 512 "$image_dir_in_host/efi.img"
 LC_CTYPE=C host_run mmd -i "$image_dir_in_host/efi.img" EFI EFI/BOOT
 for i in "$image_dir/EFI/BOOT"/*
-do LC_CTYPE=C host_run mcopy -i "$image_dir_in_host/efi.img" "$i" "::EFI/BOOT/"
+do	LC_CTYPE=C host_run mcopy -i "$image_dir_in_host/efi.img" \
+	 "$image_dir_in_host/EFI/BOOT/$(basename "$i")" "::EFI/BOOT/"
 done
 
 ### generate
@@ -399,7 +395,7 @@ host_run xorriso -as mkisofs -iso-level 3 -rock -joliet -max-iso9660-filenames \
  -omit-period -omit-version-number -relaxed-filenames -allow-lowercase \
  -volid CHIMERA_LIVE -eltorito-boot limine-bios-cd.bin -no-emul-boot \
  -boot-load-size 4 -boot-info-table -hfsplus -apm-block-size 2048 \
- -eltorito-alt-boot -e "$image_dir_in_host/efi.img" -efi-boot-part \
+ -eltorito-alt-boot -e efi.img -efi-boot-part \
  --efi-boot-image --protective-msdos-label --mbr-force-bootable \
  -o /mnt/image.iso /mnt/image
 host_run limine bios-install /mnt/image.iso
