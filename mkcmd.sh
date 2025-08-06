@@ -19,6 +19,7 @@
 #################### lib
 
 ##### public vars
+set -eu
 prog="$(basename "$0")"
 dir="$(dirname "$(realpath "$0")")"
 stage=lib
