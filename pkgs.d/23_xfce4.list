@@ -1,11 +1,4 @@
 !xfce4-settings-default-themes
 !xfwm4-default-themes
 ## xfce desktop
-mousepad
-xfce4-appfinder
-xfce4-panel-plugins
-xfce4-session
-xfce4-settings
-xfce4-terminal
-xfdesktop
-xfwm4
+xfce4

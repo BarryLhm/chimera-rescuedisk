@@ -4,6 +4,37 @@
 configs:
 - level: 0
   monitors:
+  - id: "b5f56078b2358c8e7202d15c62eb76ffdd2c4ef7"
+    display_name: "Samsung Electric Company SyncMaster HVNQ802531 (VGA-1)"
+    geometry:
+      x: 0
+      y: 0
+      width: 1680
+      height: 1050
+  icons:
+    "/":
+      row: 1
+      col: 0
+    "trash:///":
+      row: 2
+      col: 0
+    "223C-F3F8":
+      row: 5
+      col: 0
+      last_seen: 1754649985544726
+    "83b8f190-338b-4d50-b752-bf851a4893c4":
+      row: 4
+      col: 0
+      last_seen: 1754649985541598
+    "/home/test":
+      row: 0
+      col: 0
+    "50F2A5AC47680C79":
+      row: 6
+      col: 0
+      last_seen: 1754649985547799
+- level: 0
+  monitors:
   - id: "abfb9c8813957ba56a06ac1f0133da569ae08c54"
     display_name: "Red Hat, Inc. QEMU Monitor (Virtual-1)"
     geometry:
@@ -14,7 +45,4 @@ configs:
   icons:
     "/home/user":
       row: 0
-      col: 0
-    "/":
-      row: 1
       col: 0

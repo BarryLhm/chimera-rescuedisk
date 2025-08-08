@@ -54,6 +54,14 @@ add_user_alias()
 	echo "$alias:${entry#*:}" >> /etc/shadow
 }
 
+setlang()
+{
+	for i in "$LOCALE_CONF" "/home/$LIVE_USER/.config/user-dirs.locale"
+	do echo "LANG=$1" > "$i"
+	done
+	echo "Language set to $1"
+}
+
 _process_cmdline()
 {
 	for i in $CMDLINE

@@ -13,11 +13,6 @@
 
 trap "" INT
 
-setlang()
-{
-	echo "LANG=$1" > "$LOCALE_CONF"; echo "Language set to $1"
-}
-
 ask_lang()
 {
 	setcolor yellow

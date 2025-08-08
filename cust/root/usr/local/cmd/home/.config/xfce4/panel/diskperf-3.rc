@@ -1,0 +1,12 @@
+Device=/dev/disk/by-label/CHIMERA_LIVE
+UseLabel=1
+Text=livedisk i/o
+UpdatePeriod=500
+Statistics=1
+XferRate=1024
+CombineRWdata=1
+MonitorBarOrder=0
+ReadColor=rgb(0,0,255)
+WriteColor=rgb(255,0,0)
+ReadWriteColor=rgb(0,255,0)
+
