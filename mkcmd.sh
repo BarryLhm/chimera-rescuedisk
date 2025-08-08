@@ -406,6 +406,7 @@ if [ "$_direct_write" = 1 ]
 then	mkdir "$host_dir/host"
 	mount --rbind / "$host_dir/host"
 	write_target_in_host="/host$_out_file"
+	[ ! -e "$write_target_in_host" ] || rm "$write_target_in_host"
 else write_target_in_host=/mnt/image.iso
 fi
 
