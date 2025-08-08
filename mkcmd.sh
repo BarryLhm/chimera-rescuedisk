@@ -154,7 +154,7 @@ stage entry_point
 	[ "$first_stage" != 1 ] || \
 	{
 		msg "restarting in seperated mount namespace..."
-		exec time unshare -m -- sh -"$-" "$0" second_stage
+		exec time -h -- unshare -m -- sh -"$-" "$0" second_stage
 	}
 }
 
