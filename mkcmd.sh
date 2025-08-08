@@ -60,6 +60,8 @@ help()
 	- tmpfs_size   = 40%       'size' mount option for each tmpfs
 	### io
 	* out_file                 output image file
+	- direct_write = 0         whether to directly write to the image
+                                   (out_file path must be absolute when 1)
 	- packages                 extra packages
 	- cmdline                  extra kernel cmdline
 	### cust
@@ -152,7 +154,7 @@ stage entry_point
 	[ "$first_stage" != 1 ] || \
 	{
 		msg "restarting in seperated mount namespace..."
-		exec unshare -m -- sh -"$-" "$0" second_stage
+		exec time unshare -m -- sh -"$-" "$0" second_stage
 	}
 }
 
@@ -168,6 +170,7 @@ var_init "$dir/cache" _cache_dir
 var_init "$dir/build" _build_dir
 var_init none _use_tmpfs
 var_init 40% _tmpfs_size
+var_init 0 _direct_write
 var_init "$dir/repositories" _cust_repos
 var_init "$dir/pkgs.d" _cust_pkgs
 var_init "$dir/cmdline" _cust_cmdline
@@ -199,8 +202,15 @@ none|rootfs|all);;
 esac
 ### tmpfs_size
 echo "$_tmpfs_size" | grep -qxE "[0-9]+[kKmMgG%]" || error "invalid tmpfs_size"
+### direct_write
+case "$_direct_write" in
+0|1);;
+*) error "invalid direct_write option";;
+esac
 ### out_file
 [ "$_out_file" ] || error "must specify output file"
+[ "$_direct_write" != 1 ] || echo "$_out_file" | grep -qz "^/" || \
+ error "out_file path not absolute"
 ### packages, checked in prepare stage later
 _packages="$(echo "$_packages" | tr "\n" " ")"
 ### cmdline, checked in prepare stage later
@@ -392,13 +402,22 @@ done
 cp "$host_dir/usr/share/limine/limine-bios-cd.bin" \
  "$host_dir/usr/share/limine/limine-bios.sys" "$image_dir/"
 
+if [ "$_direct_write" = 1 ]
+then	mkdir "$host_dir/host"
+	mount --rbind / "$host_dir/host"
+	write_target_in_host="/host$_out_file"
+else write_target_in_host=/mnt/image.iso
+fi
+
 host_run xorriso -as mkisofs -iso-level 3 -rock -joliet -max-iso9660-filenames \
  -omit-period -omit-version-number -relaxed-filenames -allow-lowercase \
  -volid CHIMERA_LIVE -eltorito-boot limine-bios-cd.bin -no-emul-boot \
  -boot-load-size 4 -boot-info-table -hfsplus -apm-block-size 2048 \
  -eltorito-alt-boot -e efi.img -efi-boot-part \
  --efi-boot-image --protective-msdos-label --mbr-force-bootable \
- -o /mnt/image.iso /mnt/image
-host_run limine bios-install /mnt/image.iso
+ -o "$write_target_in_host" /mnt/image
+host_run limine bios-install "$write_target_in_host"
 
-mv "$_build_dir/image.iso" "$_out_file"
+[ "$_direct_write" = 1 ] || mv "$_build_dir/image.iso" "$_out_file"
+
+msg "build finished" "time elapsed:"

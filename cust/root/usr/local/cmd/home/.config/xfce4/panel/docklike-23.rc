@@ -1,0 +1,17 @@
+[user]
+forceIconSize=true
+iconSize=22
+keyComboActive=true
+keyAloneActive=false
+indicatorColorFromTheme=false
+inactiveColor=rgb(119,118,123)
+indicatorColor=rgb(98,160,234)
+indicatorOrientation=0
+showWindowCount=false
+showPreviews=true
+onlyDisplayVisible=true
+noWindowsListIfSingle=false
+middleButtonBehavior=1
+indicatorStyle=0
+inactiveIndicatorStyle=3
+pinned=xfce4-terminal;thunar;

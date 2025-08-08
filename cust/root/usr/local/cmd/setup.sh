@@ -10,3 +10,6 @@
 
 add_user_alias "$LIVE_USER" "$LIVE_USER-graphical"
 usermod -s "$CMD_DIR/graphical-session.sh" "$LIVE_USER-graphical"
+
+cp -R "$CMD_DIR/home/" "/home/$LIVE_USER/"
+chown -R "$LIVE_USER:$LIVE_USER" "/home/$LIVE_USER"

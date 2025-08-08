@@ -7,4 +7,4 @@
 [ ! -d build ] || rm -r build
 
 export _out_file="$out_image" _use_tmpfs=all _tmpfs_size=4G
-exec $@ ./mkcmd.sh first_stage
+exec ./mkcmd.sh first_stage

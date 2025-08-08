@@ -1,0 +1,9 @@
+## x11 server
+xserver-xorg
+xserver-xorg-input-evdev
+xserver-xorg-input-libinput
+xserver-xorg-input-wacom
+xserver-xorg-video-ati
+xserver-xorg-video-nouveau
+xserver-xorg-xephyr
+xserver-xorg-xvfb

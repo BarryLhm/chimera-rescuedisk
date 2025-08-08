@@ -2,3 +2,4 @@ build/
 cache/
 *.iso
 *.kate-swp
+custom_make.sh
